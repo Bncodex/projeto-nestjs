@@ -5,10 +5,11 @@ import { ConvidadosController } from './convidados/convidados.controller.js';
 import { ConvidadosService } from './convidados/convidados.service.js';
 import { LivrosController } from './livros/livros.controller.js';
 import { LivrosService } from './livros/livros.service.js';
+import { MediaController } from './media/media.controller.js';
 
 @Module({
   imports: [],
-  controllers: [AppController, ConvidadosController, LivrosController],
+  controllers: [AppController, ConvidadosController, LivrosController, MediaController],
   providers: [AppService, ConvidadosService, LivrosService],
 })
 
