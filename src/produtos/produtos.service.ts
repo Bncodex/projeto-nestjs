@@ -1,8 +1,7 @@
-import {BadRequestException,Injectable,NotFoundException,} from '@nestjs/common';
+import { BadRequestException,Injectable,NotFoundException,} from '@nestjs/common';
 import { Produto } from './interfaces/produto.interface.js';
-
+import { CreateProdutoDto } from './dto/create-produto.dto.js';
 @Injectable()
-
 export class ProdutosService {
   // Aula 15: acervo simulado em memória.
   // Atividade Prática "O Sistema Anti-Falhas".
@@ -11,13 +10,22 @@ export class ProdutosService {
     { id: 2, nome: 'Mouse', preco: 80 },
     { id: 3, nome: 'Teclado', preco: 150 },
   ];
-
+  private proximoId = 4;
+  // Aula 17: usado pela atividade para documentar um POST.
+  create(createProdutoDto: CreateProdutoDto): Produto {
+    const novoProduto: Produto = {
+      id: this.proximoId++,
+      ...createProdutoDto,
+    };
+    this.produtos.push(novoProduto);
+    return novoProduto;
+  }
   findOne(idParam: string): Produto {
     // Erro 1: o ID da rota não é um número inteiro.
     if (!/^\d+$/.test(idParam)) {
       throw new BadRequestException('O ID fornecido deve ser do tipo inteiro');
     }
-    const id = Number(idParam); //Converte String que veio do Json para Number
+    const id = Number(idParam);
     const produto = this.produtos.find((p) => p.id === id);
     // Erro 2: ID válido, mas nenhum produto com ele.
     if (!produto) {

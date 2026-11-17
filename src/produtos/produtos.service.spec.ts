@@ -15,6 +15,19 @@ describe('ProdutosService', () => {
     expect(service).toBeDefined();
   });
 
+  it('create deve cadastrar com o próximo ID', () => {
+    const criado = service.create({
+      nome: 'Arroz 5kg',
+      preco: 25.9,
+    });
+    expect(criado).toEqual({
+      id: 4,
+      nome: 'Arroz 5kg',
+      preco: 25.9,
+    });
+    expect(service.findOne('4')).toEqual(criado);
+  });
+
   it('findOne deve retornar o produto encontrado', () => {
     expect(service.findOne('1')).toEqual({
       id: 1,
@@ -28,7 +41,7 @@ describe('ProdutosService', () => {
       new BadRequestException('O ID fornecido deve ser do tipo inteiro'),
     );
   });
-  
+
   it('findOne deve lançar NotFoundException para ID inexistente', () => {
     expect(() => service.findOne('999')).toThrow(
       new NotFoundException('Produto com ID 999 não encontrado'),
