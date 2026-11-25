@@ -1,13 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { vi } from 'vitest';
 import { ProdutosController } from './produtos.controller.js';
 import { ProdutosService } from './produtos.service.js';
 
 describe('ProdutosController', () => {
   let controller: ProdutosController;
+  // Service falso: o controller é testado sem o Mongoose.
+  const produtosService = {
+    create: vi.fn(),
+    findOne: vi.fn(),
+
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProdutosController],
-      providers: [ProdutosService],
+      providers: [
+        {
+          provide: ProdutosService,
+          useValue: produtosService,
+        },
+      ],
+
     }).compile();
     controller = module.get<ProdutosController>(ProdutosController);
   });
@@ -17,16 +30,28 @@ describe('ProdutosController', () => {
   });
 
   it('buscarPorId deve devolver o produto', () => {
+    produtosService.findOne.mockReturnValue({
+      id: 2,
+      nome: 'Mouse',
+      preco: 80,
+    });
     expect(controller.buscarPorId('2').nome).toBe('Mouse');
   });
 
-  it('criar deve devolver o produto com ID', () => {
-    const criado = controller.criar({
-      nome: 'Arroz 5kg',
-      preco: 25.9,
+  it('criar deve devolver o documento criado', async () => {
+    const dto = {
+      nome: 'Torno CNC X200',
+      preco: 15000,
+      categoria: 'Ferramentas',
+    };
+
+    produtosService.create.mockResolvedValue({
+      _id: 'abc123',
+      ...dto,
     });
     
-    expect(criado.id).toBe(4);
-    expect(criado.nome).toBe('Arroz 5kg');
+    const criado = await controller.criar(dto);
+    expect(produtosService.create).toHaveBeenCalledWith(dto);
+    expect(criado).toMatchObject({ _id: 'abc123' });
   });
 });

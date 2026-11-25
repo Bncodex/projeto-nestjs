@@ -13,9 +13,17 @@ export class ProdutosController {
   @ApiOperation({ summary: 'Cria um novo produto' })
   @ApiResponse({
     status: 201,
-    description: 'Produto criado com sucesso.',
+    description: 'Produto criado com sucesso.', // Deu certo
   })
-  criar(@Body() createProdutoDto: CreateProdutoDto) {
+  @ApiResponse({
+    status: 400,
+    description: 'Dados recusados pelo Schema.', // Não de certo 
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Produto já registrado.', // Produto que já existe no banco de dados
+  })
+  async criar(@Body() createProdutoDto: CreateProdutoDto) {
     return this.produtosService.create(createProdutoDto);
   }
   // GET /produtos/:id
@@ -23,15 +31,15 @@ export class ProdutosController {
   @ApiOperation({ summary: 'Busca um produto pelo ID' })
   @ApiResponse({
     status: 200,
-    description: 'Produto encontrado.',
+    description: 'Produto encontrado.', // Mostra o produto
   })
   @ApiResponse({
     status: 400,
-    description: 'ID em formato inválido.',
+    description: 'ID em formato inválido.', // Não deu certo
   })
   @ApiResponse({
     status: 404,
-    description: 'Produto não encontrado.',
+    description: 'Produto não encontrado.', // Produto não existe no banco de dados
   })
   buscarPorId(@Param('id') id: string) {
     return this.produtosService.findOne(id);

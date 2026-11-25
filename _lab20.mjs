@@ -18,7 +18,7 @@ const casos = {
   'preco como texto': { nome: 'X', preco: 'abc', categoria: 'EPI' },
   'campo extra': { nome: 'Y', preco: 1, categoria: 'EPI', cor: 'azul' },
   'preco texto numerico': { nome: 'Z', preco: '10', categoria: 'EPI' },
-};
+};;
 for (const [t, d] of Object.entries(casos)) {
   try {
     const x = await new Produto(d).save();
